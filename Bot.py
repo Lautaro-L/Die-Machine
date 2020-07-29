@@ -86,7 +86,7 @@ def commentar(lista_usuarios, var_cantidad, post_url):
     time.sleep(random.randint(250, 380))
 
 def startBot():
-    print("ingrese 1 paracrear lista de usuarios a etiquetar o cualquier cosa para iniciar el bot")
+    print("ingrese 1 para crear lista de usuarios a etiquetar o cualquier cosa para iniciar el bot")
     desicion = input()
     if(desicion == 1):
         archivoDeUsuarios()
