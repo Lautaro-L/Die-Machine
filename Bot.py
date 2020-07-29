@@ -83,7 +83,7 @@ def commentar(lista_usuarios, var_cantidad, post_url):
         commentArea.send_keys(usuarios[i])
         commentArea.send_keys(" ")
     commentArea.send_keys(Keys.ENTER)
-    time.sleep(random.randint(580, 700))
+    time.sleep(random.randint(250, 380))
 
 def startBot():
     print("ingrese 1 paracrear lista de usuarios a etiquetar o cualquier cosa para iniciar el bot")
