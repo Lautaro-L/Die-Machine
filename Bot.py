@@ -62,9 +62,8 @@ def botcomment():
     not_now = chrome.find_element_by_class_name("sqdOP.yWX7d.y3zKF")     
     not_now.click()
     time.sleep(random.randint(4, 9))
-    for i in(0, 150):
+    while(True):
         commentar(lst, cant, url)
-        i+=1
     chrome.quit()
 
 def commentar(lista_usuarios, var_cantidad, post_url):
@@ -86,7 +85,7 @@ def commentar(lista_usuarios, var_cantidad, post_url):
     time.sleep(random.randint(250, 380))
 
 def startBot():
-    print("ingrese 1 para crear lista de usuarios a etiquetar o cualquier cosa para iniciar el bot")
+    print("ingrese 1 paracrear lista de usuarios a etiquetar o cualquier cosa para iniciar el bot")
     desicion = input()
     if(desicion == 1):
         archivoDeUsuarios()
