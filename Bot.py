@@ -64,7 +64,6 @@ def botcomment():
     time.sleep(random.randint(4, 9))
     while(True):
         commentar(lst, cant, url)
-    chrome.quit()
 
 def commentar(lista_usuarios, var_cantidad, post_url):
     url = post_url
