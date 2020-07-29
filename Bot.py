@@ -10,7 +10,7 @@ chrome_options.add_argument("--headless")
 def archivoDeUsuarios():
     f= open("usuarios.txt","w+")
     while (True):
-        print("ingresar usuario con el @ para seguir agregando o cualquier otra cosa para terminar de ingresar")
+        print("ingresar usuario con el @ para seguir agregando o cualquier otra cosa no nulla para terminar de ingresar")
         arroba = input()
         if(arroba[0] == '@'):
             f.write("%s\n"%arroba)
