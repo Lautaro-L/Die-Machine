@@ -1,2 +1,1 @@
-# instaCommentBot
-Bot que comenta publicaciones específicas de IG
+necesitas hacer pip install selenium para correrlo primero
