@@ -4,52 +4,60 @@ chrome_options = Options()
 from selenium.webdriver.common.keys import Keys
 import time 
 import random
+import getpass
 import re
 import os
-chrome_options.add_argument("--headless")
-def archivoDeUsuarios():
-    f= open("usuarios.txt","w+")
-    while (True):
-        print("ingresar usuario con el @ para seguir agregando o cualquier otra cosa no nulla para terminar de ingresar")
-        arroba = input()
-        if(arroba[0] == '@'):
-            f.write("%s\n"%arroba)
-        else:
-            break
-    f.close() 
 
-def openfile(filename):
-    fname = filename
+#chrome_options.add_argument("--headless")
+
+def find(name, path):
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            return os.path.join(root, name)
+
+def userFile(fileName):
+    
+    if not isInPath(fileName): file = open(fileName,"w+")
+    else: file = open(fileName, "a")
+    while True:
+        print("Ingresar usuario a comentar o EXIT para salir")
+        user = input("Usuario: ")
+
+        if user.upper() != "EXIT":
+            user = user.replace(" ", "")
+            user = '@' + user
+            file.write("%s\n" % user)
+        else: break
+
+    file.close() 
+
+def openFile(fileName):
     try:
-        f = open(fname, 'r')
+        file = open(fileName, 'r')
     except FileNotFoundError:
-        print("no existe el archivo de personas a arrobar")
-        archivoDeUsuarios()
-        openfile(fname)
-    if(os.path.getsize(fname) == 0):
-        print("El archivo de personas a arrobar esta vacio agrega usuarios capo")
-        archivoDeUsuarios()
-        openfile(filename)
+        print("No existe", fileName)
+        userFile(fileName)
+        openFile(fileName)
+    if os.path.getsize(fileName) == 0:
+        print("El archivo", fileName, "esta vacio")
+        userFile(fileName)
+        openFile(fileName)
 
-def botcomment():
-    fname = 'usuarios.txt'
-    openfile(fname)
+def botComment(fname):
+    openFile(fname)
     f = open(fname, 'r')
-    lst = []
-    lst = re.findall(r'(@.*)', f.read())
-    print("enter username") 
-    username = input() 
-    print("enter password") 
-    password = input() 
-    print("ingresar la url del post a comentar") 
-    url = input()
-    print("ingrese a cuantos usuarios arrobar")
-    cant = int(input())
+    usersList = []
+    usersList = re.findall(r'(@.*)', f.read())
+
+    username = input("Ingrese su usuario: ")
+    password = getpass.getpass("Ingrese su contraseña: ")
+    url = input("Ingrese la URL del post a comentar: ")
+    quantity = int(input("Ingrese la cantidad a taguear: "))
+    if quantity > len(usersList):
+        quantity = len(usersList)
 
     global chrome
-    #webdriver.Chrome(options=chrome_options)
-    #webdriver.Chrome(executable_path = "chromedriver.exe")
-    chrome = webdriver.Chrome(options=chrome_options)
+    chrome = webdriver.Chrome(options = chrome_options)
     chrome.get("https://www.instagram.com/")
     time.sleep(random.randint(9, 15))
     usern = chrome.find_element_by_name("username")     
@@ -58,36 +66,57 @@ def botcomment():
     passw.send_keys(password)       
     log_cl = chrome.find_element_by_class_name("L3NKy")     
     log_cl.click()
-    time.sleep(random.randint(4, 9))
+    time.sleep(random.randint(2, 4))
     not_now = chrome.find_element_by_class_name("sqdOP.yWX7d.y3zKF")     
     not_now.click()
-    time.sleep(random.randint(4, 9))
-    while(True):
-        commentar(lst, cant, url)
+    time.sleep(random.randint(2, 4))
+    while True:
+        makeComment(usersList, quantity, url)
 
-def commentar(lista_usuarios, var_cantidad, post_url):
-    url = post_url
-    cant = var_cantidad
-    lst = lista_usuarios
-    chrome.get(url)
-    time.sleep(random.randint(10, 15))
+def makeComment(userList, quantity, postURL):
+    chrome.get(postURL)
+    time.sleep(random.randint(6, 12))
     commentArea = chrome.find_element_by_class_name('Ypffh')
     commentArea.click()
-    time.sleep(random.randint(4, 9))
+    time.sleep(random.randint(2, 4))
     commentArea = chrome.find_element_by_class_name('Ypffh')
     commentArea.click()
-    usuarios = random.sample(lst, cant)
-    for i in range(0, cant):
-        commentArea.send_keys(usuarios[i])
+    users = random.sample(userList, quantity)
+
+    for i in range(quantity):
+        commentArea.send_keys(users[i])
         commentArea.send_keys(" ")
+
     commentArea.send_keys(Keys.ENTER)
     time.sleep(random.randint(250, 380))
 
+def convert(s): 
+    new = "" 
+    for x in s: 
+        new += x  
+    return new 
+
+def isInPath(fname):
+    dir = __file__
+    i = 0
+    lista = list(dir)
+    while i != 6:
+
+        del lista[-1]
+        i += 1
+
+    return find(fname, convert(lista))
+
 def startBot():
-    print("ingrese 1 paracrear lista de usuarios a etiquetar o cualquier cosa para iniciar el bot")
-    desicion = input()
-    if(desicion == 1):
-        archivoDeUsuarios()
-    else:
-            botcomment()
+    possibleAnswers = ['A', 'I']
+    print("Que desea realizar: - (A)gregar Usuarios Al Archivo")
+    print("                    - (I)niciar Bot")
+    option = input("Su respuesta: ")
+
+    while option not in possibleAnswers:
+        option = input("Ingrese una opcion valida:")
+
+    if option.upper() == 'A': userFile("Usuarios.txt")
+    else: botComment("Usuarios.txt")
+
 startBot()
